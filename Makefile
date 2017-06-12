@@ -1,3 +1,5 @@
+REDIS_SERVER_PATH=../redis-4.0-rc2/src/redis-server
+
 # set environment variable RM_INCLUDE_DIR to the location of redismodule.h
 ifndef RM_INCLUDE_DIR
         RM_INCLUDE_DIR=./
@@ -28,6 +30,16 @@ all:  $(OBJS) $(MODULE)
 
 $(MODULE): %: %.o
 	$(LD) -o $@.so  $(OBJS) $< $(SHOBJ_LDFLAGS) $(LIBS) -lc
+
+
+test $(OBJS) $(MODULE):
+	@pip install redis
+	@echo "Starting redis server";
+	$(REDIS_SERVER_PATH) --loadmodule $(PWD)/bloom_filter.so > /dev/null &
+	python test.py
+	@echo "Stoping redis server"
+	@sleep 1
+	@pkill redis-server
 
 clean:
 	rm -rf *.o *.so

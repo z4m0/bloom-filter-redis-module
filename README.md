@@ -13,6 +13,12 @@ make
 redis-server --loadmodule /path/to/bloom_filter.so
 ```
 
+## Test
+```
+make test
+```
+
+
 Operations
 ----------
 
